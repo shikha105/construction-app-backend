@@ -7,8 +7,8 @@ import com.citb.app.payloads.PortfolioDTO;
 public interface PortfolioService {
 
 	 PortfolioDTO createPortfolio(PortfolioDTO portfolioDTO);
-	 PortfolioDTO updatePortfolio(PortfolioDTO portfolioDTO, Integer portfolioId);
-	 PortfolioDTO getPortfoliobyId( Integer portfolioId);
+	 PortfolioDTO updatePortfolio(PortfolioDTO portfolioDTO, String portfolioId);
+	 PortfolioDTO getPortfoliobyId( String portfolioId);
 	 List<PortfolioDTO> getAllPortfolios();
-	 void deletePortfolio(Integer portfolioId);
+	 void deletePortfolio(String portfolioId);
 }

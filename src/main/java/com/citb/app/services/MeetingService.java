@@ -9,11 +9,11 @@ public interface MeetingService {
 
 	MeetingDTO createMeeting(MeetingDTO meetingDTO);
 
-	MeetingDTO updateMeeting(MeetingDTO meetingDTO, Integer meetingId);
+	MeetingDTO updateMeeting(MeetingDTO meetingDTO, String meetingId);
 
-	MeetingDTO getMeetingDetailsById(Integer meetingId);
+	MeetingDTO getMeetingDetailsById(String meetingId);
 
-	List<MeetingDTO> getAllMeetingsByUserId(Integer userId);
+	List<MeetingDTO> getAllMeetingsByUserId(String userId);
 
-	void cancelMeeting(Integer meetingId);
+	void cancelMeeting(String meetingId);
 }

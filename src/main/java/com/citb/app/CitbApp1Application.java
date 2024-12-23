@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.citb.app.config.AppConstants;
 import com.citb.app.entities.Role;
 import com.citb.app.repositories.RoleRepo;
+import com.citb.app.utils.RandomUtil;
 
 @EntityScan(basePackages = "com.citb.app.entities")
 @SpringBootApplication
@@ -36,7 +37,6 @@ public class CitbApp1Application implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		System.out.println("encoded password for Kakashi "+ this.passwordEncoder.encode("Kakashi"));
 
 		try {
 			Role role = new Role();
@@ -44,7 +44,7 @@ public class CitbApp1Application implements CommandLineRunner {
 			role.setName("APPRENTICE");
 
 			Role role1 = new Role();
-			role1.setId(AppConstants.ROLE_OFFICER_ID);
+			role1.setId( AppConstants.ROLE_OFFICER_ID);
 			role1.setName("OFFICER");
 
 			// to save in db

@@ -12,6 +12,7 @@ import com.citb.app.exceptions.ResourceNotFoundException;
 import com.citb.app.payloads.PortfolioDTO;
 import com.citb.app.repositories.PortfolioRepo;
 import com.citb.app.services.PortfolioService;
+import com.citb.app.utils.RandomUtil;
 
 @Service
 public class PortfolioServiceImpl implements PortfolioService{
@@ -27,6 +28,7 @@ public class PortfolioServiceImpl implements PortfolioService{
 	public PortfolioDTO createPortfolio(PortfolioDTO portfolioDTO) {
 		
 		Portfolio portfolio = this.modelMapper.map(portfolioDTO, Portfolio.class);
+		portfolio.setId(RandomUtil.randomIdentity("Portfolio"));
 		Portfolio createdPortfolio = this.portRepo.save(portfolio);
 		
 		
@@ -34,7 +36,7 @@ public class PortfolioServiceImpl implements PortfolioService{
 	}
 
 	@Override
-	public PortfolioDTO updatePortfolio(PortfolioDTO portfolioDTO, Integer portfolioId) {
+	public PortfolioDTO updatePortfolio(PortfolioDTO portfolioDTO, String portfolioId) {
 		
 		Portfolio portfolio = this.portRepo.findById(portfolioId).orElseThrow(() -> new ResourceNotFoundException("porrtfolio", "id", portfolioId));
 		
@@ -47,7 +49,7 @@ public class PortfolioServiceImpl implements PortfolioService{
 	}
 
 	@Override
-	public PortfolioDTO getPortfoliobyId(Integer portfolioId) {
+	public PortfolioDTO getPortfoliobyId(String portfolioId) {
 
 		Portfolio portfolio = this.portRepo.findById(portfolioId).orElseThrow(() -> new ResourceNotFoundException("porrtfolio", "id", portfolioId));
 		return this.modelMapper.map(portfolio, PortfolioDTO.class);
@@ -65,7 +67,7 @@ public class PortfolioServiceImpl implements PortfolioService{
 	}
 
 	@Override
-	public void deletePortfolio(Integer portfolioId) {
+	public void deletePortfolio(String portfolioId) {
 		
 		Portfolio portfolio = this.portRepo.findById(portfolioId).orElseThrow(() -> new ResourceNotFoundException("porrtfolio", "id", portfolioId));
 		this.portRepo.delete(portfolio);

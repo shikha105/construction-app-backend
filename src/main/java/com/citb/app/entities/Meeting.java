@@ -47,7 +47,7 @@ public class Meeting {
 	private MeetingStatus status;
 	
 	@Column(name="creator_id", nullable = false, length = 100)
-	private int creatorId;
+	private String creatorId;
 
 }
 

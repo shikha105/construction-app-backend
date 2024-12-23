@@ -39,7 +39,7 @@ public class MeetingController {
 	
 	//@PreAuthorize("hasRole('ROLE_OFFICER')")
 	@PutMapping("/{meetingId}")
-	public ResponseEntity<MeetingDTO> updateMeeting(@Valid @RequestBody MeetingDTO meetingDTO, @PathVariable Integer meetingId){
+	public ResponseEntity<MeetingDTO> updateMeeting(@Valid @RequestBody MeetingDTO meetingDTO, @PathVariable String meetingId){
 		MeetingDTO updatedMeetingDTO =	this.meetingService.updateMeeting(meetingDTO, meetingId);
 		
 		
@@ -47,7 +47,7 @@ public class MeetingController {
 	}
 	
 	@GetMapping("/{meetingId}")
-	public ResponseEntity<MeetingDTO> getMeetingById(@PathVariable  Integer meetingId){
+	public ResponseEntity<MeetingDTO> getMeetingById(@PathVariable  String meetingId){
 		MeetingDTO meetingDTO =	this.meetingService.getMeetingDetailsById(meetingId);
 		
 		
@@ -55,7 +55,7 @@ public class MeetingController {
 	}
 	
 	@GetMapping("/getAll/{userId}")
-	public ResponseEntity<List<MeetingDTO>> getAllMeetingsByUserId(@PathVariable  Integer userId){
+	public ResponseEntity<List<MeetingDTO>> getAllMeetingsByUserId(@PathVariable  String userId){
 		List<MeetingDTO> meetingDTOs =	this.meetingService.getAllMeetingsByUserId(userId);
 		
 		
@@ -63,7 +63,7 @@ public class MeetingController {
 	}
 	
 	@PutMapping("/cancel/{meetingId}")
-	public ResponseEntity<ApiResponse> cancelMeeting(@PathVariable Integer meetingId){
+	public ResponseEntity<ApiResponse> cancelMeeting(@PathVariable String meetingId){
 			this.meetingService.cancelMeeting(meetingId);
 		return new ResponseEntity<ApiResponse>(new ApiResponse("cancelled successfully", true), HttpStatus.OK);
 		

@@ -17,6 +17,7 @@ import com.citb.app.payloads.UserDTO;
 import com.citb.app.repositories.RoleRepo;
 import com.citb.app.repositories.UserRepo;
 import com.citb.app.services.UserService;
+import com.citb.app.utils.RandomUtil;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -43,6 +44,7 @@ public class UserServiceImpl implements UserService {
 				.orElseThrow(() -> new IllegalArgumentException("Role not found"));
 
 		user.setRole(role);
+		user.setId(RandomUtil.randomIdentity("User"));
 		User registeredUser = userRepo.save(user);
 
 		UserDTO registeredUserDTO = this.modelMapper.map(registeredUser, UserDTO.class);
@@ -60,7 +62,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserDTO updateUser(UserDTO userDTO, Integer userId) {
+	public UserDTO updateUser(UserDTO userDTO, String userId) {
 		User user = this.userRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
 		user.setName(userDTO.getName());
@@ -78,7 +80,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserDTO getUserById(Integer userId) {
+	public UserDTO getUserById(String userId) {
 
 		User user = this.userRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException("user", "id", userId));
@@ -96,7 +98,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void deleteUser(Integer userId) {
+	public void deleteUser(String userId) {
 		User user = this.userRepo.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
 		this.userRepo.delete(user);

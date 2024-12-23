@@ -14,7 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PortfolioDTO {
 
-	private int id;
+	private String id;
 	
 	@NotEmpty
 	private String title;

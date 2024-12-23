@@ -57,7 +57,7 @@ public class MeetingDTO {
 	
 	private MeetingStatus status;
 	
-	private int creatorId;
+	private String creatorId;
 	
 	
 }

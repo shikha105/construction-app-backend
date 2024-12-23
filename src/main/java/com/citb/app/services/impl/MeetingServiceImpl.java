@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
+import com.citb.app.config.AppConstants;
 import com.citb.app.entities.Meeting;
 import com.citb.app.entities.MeetingStatus;
 import com.citb.app.entities.Portfolio;
@@ -50,10 +51,13 @@ public class MeetingServiceImpl implements MeetingService {
 		// fetching user details and setting the user id as creator id
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String username = userDetails.getUsername();
+		
 		User userInfo = (User) userDetailsService.loadUserByUsername(username);
+		
 		Role role = userInfo.getRole();
-
-		if (role.getId() != 501) {
+		
+		if (!role.getId().equals(AppConstants.ROLE_OFFICER_ID) ) {
+			
 			throw new ApiException("Create Meeting feature is only for Apprentice Officer");
 		}
 
@@ -85,7 +89,7 @@ public class MeetingServiceImpl implements MeetingService {
 	}
 
 	@Override
-	public MeetingDTO updateMeeting(MeetingDTO meetingDTO, Integer meetingId) {
+	public MeetingDTO updateMeeting(MeetingDTO meetingDTO, String meetingId) {
 		Meeting meeting = meetingRepo.findById(meetingId)
 				.orElseThrow(() -> new ResourceNotFoundException("meeting", "id", meetingId));
 
@@ -107,7 +111,7 @@ public class MeetingServiceImpl implements MeetingService {
 	}
 
 	@Override
-	public MeetingDTO getMeetingDetailsById(Integer meetingId) {
+	public MeetingDTO getMeetingDetailsById(String meetingId) {
 		Meeting meeting = meetingRepo.findById(meetingId)
 				.orElseThrow(() -> new ResourceNotFoundException("meeting", "id", meetingId));
 
@@ -115,7 +119,7 @@ public class MeetingServiceImpl implements MeetingService {
 	}
 
 	@Override
-	public List<MeetingDTO> getAllMeetingsByUserId(Integer userId) {
+	public List<MeetingDTO> getAllMeetingsByUserId(String userId) {
 		List<Meeting> meetings = this.meetingRepo.findAll();
 
 		// fetching user role and using it
@@ -126,7 +130,7 @@ public class MeetingServiceImpl implements MeetingService {
 		Role role = userInfo.getRole();
 
 		Set<Meeting> validMeetings = new HashSet<>();
-		if (role.getId() == 501) {
+		if (role.getId() == "Role-501")  {
 
 			for (Meeting mee : meetings) {
 				if (mee.getCreatorId() == userId) {
@@ -134,7 +138,7 @@ public class MeetingServiceImpl implements MeetingService {
 				}
 			}
 
-		} else if (role.getId() == 502) {
+		} else if (role.getId() == "Role-502") {
 
 			for (Meeting mee : meetings) {
 				for (User user : mee.getGuests()) {
@@ -155,7 +159,7 @@ public class MeetingServiceImpl implements MeetingService {
 	}
 
 	@Override
-	public void cancelMeeting(Integer meetingId) {
+	public void cancelMeeting(String meetingId) {
 		Meeting meeting = this.meetingRepo.findById(meetingId)
 				.orElseThrow(() -> new ResourceNotFoundException("meeting", "id", meetingId));
 

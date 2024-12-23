@@ -38,14 +38,14 @@ public class PortfolioController {
 	}
 	
 	@PutMapping("/{portfolioId}")
-	public ResponseEntity<PortfolioDTO> updatePortfolio(@Valid @RequestBody PortfolioDTO portfolioDTO, @PathVariable Integer portfolioId){
+	public ResponseEntity<PortfolioDTO> updatePortfolio(@Valid @RequestBody PortfolioDTO portfolioDTO, @PathVariable String portfolioId){
 		PortfolioDTO updatedPortfolioDTO =	this.portService.updatePortfolio(portfolioDTO, portfolioId);
 		
 		
 		return new ResponseEntity<>(updatedPortfolioDTO, HttpStatus.OK);
 	}
 	@GetMapping("/{portfolioId}")
-	public ResponseEntity<PortfolioDTO> getPortfolioById(@PathVariable  Integer portfolioId){
+	public ResponseEntity<PortfolioDTO> getPortfolioById(@PathVariable  String portfolioId){
 		PortfolioDTO portfolioDTO =	this.portService.getPortfoliobyId(portfolioId);
 		
 		
@@ -61,7 +61,7 @@ public class PortfolioController {
 	}
 	
 	@DeleteMapping("/{portfolioId}")
-	public ResponseEntity<ApiResponse> deletePortfolio(@PathVariable Integer portfolioId){
+	public ResponseEntity<ApiResponse> deletePortfolio(@PathVariable String portfolioId){
 			this.portService.deletePortfolio(portfolioId);
 		return new ResponseEntity<ApiResponse>(new ApiResponse("deleted successfully", true), HttpStatus.OK);
 		

@@ -22,8 +22,8 @@ import lombok.Setter;
 public class Portfolio {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	@Column(length = 50, nullable = false, unique = true)
+	private String id;
 	
 	@Column(length = 20, nullable = false)
 	private String title;

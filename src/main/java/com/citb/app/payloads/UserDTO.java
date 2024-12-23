@@ -19,7 +19,7 @@ import lombok.Setter;
 @Setter
 public class UserDTO {
 	
-	private int id;
+	private String id;
 	
 	@NotEmpty
 	@Size(min = 3, message ="name length should be atleast 3 characters")
@@ -30,7 +30,7 @@ public class UserDTO {
 	
 	@NotEmpty
 	@Size(min = 5, max = 10, message= "Password must be between 3 to 10 (inclusive) letters")
-	@JsonIgnore
+	
     private String password;
 	
 	@NotEmpty

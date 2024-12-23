@@ -17,7 +17,7 @@ public class RoleDTO {
 
 
 	
-	private int id;
+	private String id;
 	
 	private String name;
 	
