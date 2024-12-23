@@ -36,5 +36,6 @@ public class UserDTO {
 	@NotEmpty
 	private String about;
 	
-	private RoleDTO roleDTO;
+	@NotEmpty
+	private RoleDTO role;
 }
