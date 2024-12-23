@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import com.citb.app.entities.MeetingStatus;
 import com.citb.app.entities.User;
@@ -23,7 +24,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class MeetingDTO {
 	
-	private int id;
+	private String id;
 	
 	@NotEmpty
 	private String title;

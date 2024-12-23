@@ -43,9 +43,9 @@ public class User implements UserDetails{
 	private Role role;
 
 	@ManyToMany
-	@JoinTable(name = "user_meeting", joinColumns = @JoinColumn(name="user_id", referencedColumnName ="id"),
-	inverseJoinColumns = @JoinColumn(name="meeting_id", referencedColumnName="id")
-			)
+@JoinTable(name = "user_meeting", joinColumns = @JoinColumn(name="user_id", referencedColumnName ="id"),
+inverseJoinColumns = @JoinColumn(name="meeting_id", referencedColumnName="id")
+		)
 	@JsonBackReference
 	Set<Meeting> meetings = new HashSet<>();
 	

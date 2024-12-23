@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
 
 		UserDTO registeredUserDTO = this.modelMapper.map(registeredUser, UserDTO.class);
 
-		registeredUserDTO.setRoleDTO(modelMapper.map(registeredUser.getRole(), RoleDTO.class));
+		registeredUserDTO.setRole(modelMapper.map(registeredUser.getRole(), RoleDTO.class));
 		return registeredUserDTO;
 	}
 
