@@ -6,14 +6,17 @@ import java.util.HashSet;
 import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+import jakarta.persistence.*;
 /**
  * 
  */
@@ -39,11 +42,11 @@ public class Meeting {
 	
 	private String location;
 	
-	@ManyToMany(mappedBy = "meetings")
-    @JsonManagedReference
-	Set<User> guests = new HashSet<>();
-	
-	
+    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH })
+    @JoinTable(name = "Meeting_Guest", joinColumns = @JoinColumn(name = "meeting_id"), 
+	inverseJoinColumns = @JoinColumn(name = "guest_id"))
+	private Set<User> guests;
+	  
 	private MeetingStatus status;
 	
 	@Column(name="creator_id", nullable = false, length = 100)

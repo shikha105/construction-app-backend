@@ -6,13 +6,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -40,13 +46,9 @@ public class User implements UserDetails{
 	@ManyToOne
 	@JoinColumn(name ="role_id")
 	private Role role;
-
+	  
 	@ManyToMany
-@JoinTable(name = "user_meeting", joinColumns = @JoinColumn(name="user_id", referencedColumnName ="id"),
-inverseJoinColumns = @JoinColumn(name="meeting_id", referencedColumnName="id")
-		)
-	@JsonBackReference
-	Set<Meeting> meetings = new HashSet<>();
+	private Set<Meeting> meetings;
 	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
