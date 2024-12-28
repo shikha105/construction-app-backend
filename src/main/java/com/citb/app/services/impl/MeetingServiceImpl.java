@@ -26,9 +26,12 @@ import com.citb.app.payloads.PortfolioDTO;
 import com.citb.app.payloads.RoleDTO;
 import com.citb.app.payloads.UserDTO;
 import com.citb.app.repositories.MeetingRepo;
+import com.citb.app.repositories.UserRepo;
 import com.citb.app.services.MeetingService;
 import com.citb.app.services.UserService;
 import com.citb.app.utils.RandomUtil;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class MeetingServiceImpl implements MeetingService {
@@ -42,13 +45,19 @@ public class MeetingServiceImpl implements MeetingService {
 
 	@Autowired
 	private UserDetailsService userDetailsService;
+	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private UserRepo userRepo;
+	
 
 	@Override
+	@Transactional
 	public MeetingDTO createMeeting(MeetingDTO meetingDTO) {
 
-		// fetching user details and setting the user id as creator id
+		
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String username = userDetails.getUsername();
 		
@@ -68,21 +77,17 @@ public class MeetingServiceImpl implements MeetingService {
 			meeting.setStatus(MeetingStatus.UPCOMING);
 		}
 
-		// validating the guest list
 		Set<User> validGuests = new HashSet<>();
 		for (UserDTO guestDTO : meetingDTO.getGuests()) {
-
-			UserDTO userDTO = userService.getUserById(guestDTO.getId());
-
-			User user = modelMapper.map(userDTO, User.class);
+			
+			User user = userRepo.findById(guestDTO.getId()).orElseThrow(() -> new ResourceNotFoundException("user", "id", guestDTO.getId()));
 
 			if (user != null) {
 				validGuests.add(user);
 			}
 		}
-
+		
 		meeting.setGuests(validGuests);
-
 		meeting.setId(RandomUtil.randomIdentity("Meeting"));
 		Meeting CreatedMeeting = meetingRepo.save(meeting);
 		return modelMapper.map(CreatedMeeting, MeetingDTO.class);
@@ -120,42 +125,14 @@ public class MeetingServiceImpl implements MeetingService {
 
 	@Override
 	public List<MeetingDTO> getAllMeetingsByUserId(String userId) {
-		List<Meeting> meetings = this.meetingRepo.findAll();
 
-		// fetching user role and using it
-		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		String username = userDetails.getUsername();
-		User userInfo = (User) userDetailsService.loadUserByUsername(username);
+		Set<Meeting> meetings = meetingRepo.findDistinctByCreatorIdOrGuests_Id(userId, userId);
 
-		Role role = userInfo.getRole();
+	    List<MeetingDTO> meetingDTOs = meetings.stream()
+	            .map(meeting -> this.modelMapper.map(meeting, MeetingDTO.class))
+	            .collect(Collectors.toList());
 
-		Set<Meeting> validMeetings = new HashSet<>();
-		if (role.getId() == "Role-501")  {
-
-			for (Meeting mee : meetings) {
-				if (mee.getCreatorId() == userId) {
-					validMeetings.add(mee);
-				}
-			}
-
-		} else if (role.getId() == "Role-502") {
-
-			for (Meeting mee : meetings) {
-				for (User user : mee.getGuests()) {
-
-					if (user.getId() == userId) {
-						validMeetings.add(mee);
-					}
-
-				}
-			}
-		}
-
-		List<MeetingDTO> meetingDTOs = validMeetings.stream()
-				.map(meeting -> this.modelMapper.map(meeting, MeetingDTO.class)).collect(Collectors.toList());
-
-		return meetingDTOs;
-
+	    return meetingDTOs;
 	}
 
 	@Override

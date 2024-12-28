@@ -42,10 +42,11 @@ public class Meeting {
 	
 	private String location;
 	
-    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH })
+    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH })
     @JoinTable(name = "Meeting_Guest", joinColumns = @JoinColumn(name = "meeting_id"), 
 	inverseJoinColumns = @JoinColumn(name = "guest_id"))
-	private Set<User> guests;
+    @Column
+	private Set<User> guests = new HashSet<>();
 	  
 	private MeetingStatus status;
 	
