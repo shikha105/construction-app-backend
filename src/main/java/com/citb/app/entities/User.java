@@ -47,7 +47,7 @@ public class User implements UserDetails{
 	@JoinColumn(name ="role_id")
 	private Role role;
 	  
-	@ManyToMany
+	@ManyToMany(mappedBy = "guests")
 	private Set<Meeting> meetings;
 	
 	@Override
