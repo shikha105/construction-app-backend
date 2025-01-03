@@ -119,4 +119,11 @@ public class UserServiceImpl implements UserService {
 		return userDTO;
 	}
 
+	@Override
+	public UserDTO getUserByUsername(String username) {
+		User user = this.userRepo.findByEmail(username)
+				.orElseThrow(() -> new ResourceNotFoundException("user", "username/email", username));
+		return this.userToDto(user);
+	}
+
 }
