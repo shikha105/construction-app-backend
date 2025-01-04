@@ -36,20 +36,12 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserDTO registerUser(UserDTO userDTO) {
-
+		
 		User user = this.modelMapper.map(userDTO, User.class);
-		user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-
-		Role role = roleRepo.findById(AppConstants.ROLE_APPRENTICE_ID)
-				.orElseThrow(() -> new IllegalArgumentException("Role not found"));
-
-		user.setRole(role);
+		user.setPassword(passwordEncoder.encode(userDTO.getPassword()));		
 		user.setId(RandomUtil.randomIdentity("User"));
 		User registeredUser = userRepo.save(user);
-
 		UserDTO registeredUserDTO = this.modelMapper.map(registeredUser, UserDTO.class);
-
-		registeredUserDTO.setRole(modelMapper.map(registeredUser.getRole(), RoleDTO.class));
 		return registeredUserDTO;
 	}
 
