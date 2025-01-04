@@ -13,10 +13,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.citb.app.config.AppConstants;
 import com.citb.app.entities.Role;
+import com.citb.app.entities.User;
 import com.citb.app.repositories.RoleRepo;
+import com.citb.app.repositories.UserRepo;
 
 @EntityScan(basePackages = "com.citb.app.entities")
 @SpringBootApplication
@@ -30,7 +33,10 @@ public class CitbApp1Application implements CommandLineRunner {
 	
 	@Autowired
 	private RoleRepo roleRepo;
-
+	@Autowired
+	private UserRepo userRepo;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	@Bean
 	public ModelMapper modelMapper() {
 		return new ModelMapper();
@@ -43,6 +49,20 @@ public class CitbApp1Application implements CommandLineRunner {
         } catch (Exception e) {
             logger.error("An error occurred while initializing roles", e);
         }
+		
+		Role role = roleRepo.findById(AppConstants.ROLE_ADMIN_ID)
+				.orElseThrow(() -> new IllegalArgumentException("Role not found"));
+		
+	     if (userRepo.findByEmail("admin@gmail.com").isEmpty()) {
+	            User admin = new User();
+	            admin.setId("User-admin-1");
+	            admin.setName("admin");
+	            admin.setEmail("admin@gmail.com");
+	            admin.setPassword(passwordEncoder.encode("admin123"));
+	            admin.setRole(role);
+	            admin.setAbout("I am an admin.");
+	            userRepo.save(admin);
+	     }
 	}
 
 	private void createRolesIfNotExist() {
