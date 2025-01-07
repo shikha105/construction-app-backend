@@ -1,6 +1,7 @@
 package com.citb.app.services.impl;
 
 import java.io.Console;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -127,7 +128,16 @@ public class MeetingServiceImpl implements MeetingService {
 	public List<MeetingDTO> getAllMeetingsByUserId(String userId) {
 
 		Set<Meeting> meetings = meetingRepo.findDistinctByCreatorIdOrGuests_Id(userId, userId);
-
+		
+		LocalDateTime currentTime = LocalDateTime.now();
+		 for (Meeting meeting : meetings) {
+		        LocalDateTime endDateTime = meeting.getEndDate().atTime(meeting.getEndTime());
+		        if (endDateTime.isBefore(currentTime) && !meeting.getStatus().equals(MeetingStatus.COMPLETED)) {
+		            meeting.setStatus(MeetingStatus.COMPLETED);
+		            meetingRepo.save(meeting);  
+		        }
+		    }
+		 
 	    List<MeetingDTO> meetingDTOs = meetings.stream()
 	            .map(meeting -> this.modelMapper.map(meeting, MeetingDTO.class))
 	            .collect(Collectors.toList());
