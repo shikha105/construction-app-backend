@@ -102,16 +102,23 @@ public class MeetingServiceImpl implements MeetingService {
 		// added new because error de raha tha
 		Set<User> guests = meetingDTO.getGuests().stream().map(userDTO -> modelMapper.map(userDTO, User.class))
 				.collect(Collectors.toSet());
-
+		
+		meeting.setTitle(meetingDTO.getTitle());
 		meeting.setDescription(meetingDTO.getDescription());
 		meeting.setEndDate(meetingDTO.getEndDate());
 		meeting.setEndTime(meetingDTO.getEndTime());
 		meeting.setStartDate(meetingDTO.getStartDate());
 		meeting.setStartTime(meetingDTO.getStartTime());
-		meeting.setGuests(guests);
 		meeting.setLocation(meetingDTO.getLocation());
-		meeting.setTitle(meetingDTO.getTitle());
-
+		
+		Set<User> resolvedGuests = new HashSet<>();
+		   for (UserDTO guestDTO : meetingDTO.getGuests()) {
+		        User user = userRepo.findById(guestDTO.getId())
+		            .orElseThrow(() -> new ResourceNotFoundException("User", "id", guestDTO.getId()));
+		        resolvedGuests.add(user);
+		   }
+		   
+		meeting.setGuests(resolvedGuests);
 		Meeting updatedMeeting = meetingRepo.save(meeting);
 		return modelMapper.map(updatedMeeting, MeetingDTO.class);
 	}
