@@ -60,15 +60,14 @@ public class AmazonS3ServiceImpl implements AmazonS3Service{
 		metaData.setContentLength(image.getSize());
 		
 		try {
-			PutObjectResult putObjectResult = amazonS3.putObject(new PutObjectRequest
-					(bucketName, imageName, image.getInputStream(), metaData));
+			amazonS3.putObject(new PutObjectRequest(bucketName, imageName, image.getInputStream(), metaData));
 		} catch (IOException e) {
 				
 			throw new ImageUploadException("error in uploading image" + e.getMessage());
 		}
 		
 		
-		return this.preSignedUrl(imageName);
+		return imageName;
 	}
 
 	@Override

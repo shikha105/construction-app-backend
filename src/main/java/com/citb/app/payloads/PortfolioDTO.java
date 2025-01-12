@@ -1,5 +1,6 @@
 package com.citb.app.payloads;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -26,7 +27,7 @@ public class PortfolioDTO {
 	@NotEmpty
 	private String description;
 	
-	 @NotNull
-	 private List<String> imageUrls;
+	 
+    private List<String> imageUrls = new ArrayList<>();
 	    
 }

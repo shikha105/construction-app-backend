@@ -32,20 +32,17 @@ public class PortfolioController {
 	@Autowired
 	private PortfolioService portService;
 	
-	@PreAuthorize("hasRole('ROLE_APPRENTICE')")
+	//@PreAuthorize("hasRole('ROLE_APPRENTICE')")
 	@PostMapping
 	public ResponseEntity<PortfolioDTO> createPortfolio(
 	        @Valid @RequestPart("portfolio") PortfolioDTO portfolioDTO, 
 	        @RequestPart("images") List<MultipartFile> images){
-		 System.out.println("Content-Type:" + RequestContextHolder.getRequestAttributes());
-		 System.out.println("Received portfolio: {}"+ portfolioDTO);
-		 System.out.println("Received {} images"+ images.size());
-		PortfolioDTO createdPortfolioDTO =	this.portService.createPortfolio(portfolioDTO, images);
 		
+		PortfolioDTO createdPortfolioDTO =	this.portService.createPortfolio(portfolioDTO, images);
 		return new ResponseEntity<>(createdPortfolioDTO, HttpStatus.CREATED);
 	}
 	
-	@PreAuthorize("hasRole('ROLE_APPRENTICE')")
+	//@PreAuthorize("hasRole('ROLE_APPRENTICE')")
 	@PutMapping("/{portfolioId}")
 	public ResponseEntity<PortfolioDTO> updatePortfolio(
 			@Valid @RequestPart("portfolio") PortfolioDTO portfolioDTO,

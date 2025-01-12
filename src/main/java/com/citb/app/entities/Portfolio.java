@@ -1,5 +1,6 @@
 package com.citb.app.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -34,8 +35,7 @@ public class Portfolio {
 	private String description;
 	
 	@Column(name="image_urls", nullable = false )
-	@ElementCollection
-    private List<String> imageUrls;
+    private List<String> imageUrls= new ArrayList<>();
     
     
 	@ManyToOne

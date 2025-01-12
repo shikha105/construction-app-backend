@@ -30,19 +30,18 @@ public class PortfolioServiceImpl implements PortfolioService{
 	
 	@Override
 	public PortfolioDTO createPortfolio(PortfolioDTO portfolioDTO, List<MultipartFile> images) {
-		
 		if (images.size() > 5) {
             throw new IllegalArgumentException("A portfolio cannot have more than 5 images.");
         }
 		
-		   List<String> imageUrls = images.stream()
+		   List<String> imageKeys = images.stream()
 	                .map(amazonS3Service::uploadImage)
 	                .collect(Collectors.toList());
 		   
-		   
+		 
 		Portfolio portfolio = this.modelMapper.map(portfolioDTO, Portfolio.class);
 		portfolio.setId(RandomUtil.randomIdentity("Portfolio"));
-		portfolio.setImageUrls(imageUrls);
+		portfolio.setImageUrls(imageKeys);
 		
 		Portfolio createdPortfolio = this.portRepo.save(portfolio);
 		
@@ -61,11 +60,11 @@ public class PortfolioServiceImpl implements PortfolioService{
 			}
 			
 
-			   List<String> imageUrls = images.stream()
+			   List<String> imageKeys = images.stream()
 		                .map(amazonS3Service::uploadImage)
 		                .collect(Collectors.toList());
 			   
-			   portfolio.setImageUrls(imageUrls);
+			   portfolio.setImageUrls(imageKeys);
 		 }
 		
 		
