@@ -20,13 +20,13 @@ import com.citb.app.entities.Role;
 import com.citb.app.entities.User;
 import com.citb.app.repositories.RoleRepo;
 import com.citb.app.repositories.UserRepo;
+import com.citb.app.services.AmazonS3Service;
 
 @EntityScan(basePackages = "com.citb.app.entities")
 @SpringBootApplication
 public class CitbApp1Application implements CommandLineRunner {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CitbApp1Application.class);
-	
 	public static void main(String[] args) {
 		SpringApplication.run(CitbApp1Application.class, args);
 	}
@@ -64,6 +64,8 @@ public class CitbApp1Application implements CommandLineRunner {
 	            userRepo.save(admin);
 	     }
 	}
+
+
 
 	private void createRolesIfNotExist() {
 		 List<Role> roles = List.of(

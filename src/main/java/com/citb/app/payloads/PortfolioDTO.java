@@ -1,10 +1,14 @@
 package com.citb.app.payloads;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,4 +26,7 @@ public class PortfolioDTO {
 	@NotEmpty
 	private String description;
 	
+	 @NotNull
+	 private List<String> imageUrls;
+	    
 }

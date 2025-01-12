@@ -49,5 +49,13 @@ public class GlobalExceptionHandler {
 		
 		return new ResponseEntity<ApiResponse>(new ApiResponse(message, false), HttpStatus.BAD_REQUEST);
 	}
+	@ExceptionHandler(ImageUploadException.class)
+	public ResponseEntity<ApiResponse> imageUploadExceptionHandler(ImageUploadException ex){
+	
+		
+		String message = ex.getMessage();
+		
+		return new ResponseEntity<ApiResponse>(new ApiResponse(message, false), HttpStatus.INTERNAL_SERVER_ERROR);
+	}
 
 }

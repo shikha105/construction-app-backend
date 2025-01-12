@@ -13,7 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.citb.app.payloads.ApiResponse;
 import com.citb.app.payloads.PortfolioDTO;
@@ -31,22 +34,31 @@ public class PortfolioController {
 	
 	@PreAuthorize("hasRole('ROLE_APPRENTICE')")
 	@PostMapping
-	public ResponseEntity<PortfolioDTO> createPortfolio(@Valid @RequestBody PortfolioDTO portfolioDTO){
-		PortfolioDTO createdPortfolioDTO =	this.portService.createPortfolio(portfolioDTO);
+	public ResponseEntity<PortfolioDTO> createPortfolio(
+	        @Valid @RequestPart("portfolio") PortfolioDTO portfolioDTO, 
+	        @RequestPart("images") List<MultipartFile> images){
+		 System.out.println("Content-Type:" + RequestContextHolder.getRequestAttributes());
+		 System.out.println("Received portfolio: {}"+ portfolioDTO);
+		 System.out.println("Received {} images"+ images.size());
+		PortfolioDTO createdPortfolioDTO =	this.portService.createPortfolio(portfolioDTO, images);
 		
 		return new ResponseEntity<>(createdPortfolioDTO, HttpStatus.CREATED);
 	}
 	
+	@PreAuthorize("hasRole('ROLE_APPRENTICE')")
 	@PutMapping("/{portfolioId}")
-	public ResponseEntity<PortfolioDTO> updatePortfolio(@Valid @RequestBody PortfolioDTO portfolioDTO, @PathVariable String portfolioId){
-		PortfolioDTO updatedPortfolioDTO =	this.portService.updatePortfolio(portfolioDTO, portfolioId);
-		
+	public ResponseEntity<PortfolioDTO> updatePortfolio(
+			@Valid @RequestPart("portfolio") PortfolioDTO portfolioDTO,
+            @PathVariable String portfolioId,
+            @RequestPart(value="images", required=false) List<MultipartFile> images){
+		PortfolioDTO updatedPortfolioDTO =	this.portService.updatePortfolio(portfolioId, portfolioDTO, images);
 		
 		return new ResponseEntity<>(updatedPortfolioDTO, HttpStatus.OK);
 	}
+	
 	@GetMapping("/{portfolioId}")
 	public ResponseEntity<PortfolioDTO> getPortfolioById(@PathVariable  String portfolioId){
-		PortfolioDTO portfolioDTO =	this.portService.getPortfoliobyId(portfolioId);
+		PortfolioDTO portfolioDTO =	this.portService.getPortfolioById(portfolioId);
 		
 		
 		return new ResponseEntity<>(portfolioDTO, HttpStatus.OK);
@@ -60,10 +72,11 @@ public class PortfolioController {
 		return new ResponseEntity<>(portfolioDTOs, HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasRole('ROLE_APPRENTICE')")
 	@DeleteMapping("/{portfolioId}")
 	public ResponseEntity<ApiResponse> deletePortfolio(@PathVariable String portfolioId){
 			this.portService.deletePortfolio(portfolioId);
-		return new ResponseEntity<ApiResponse>(new ApiResponse("deleted successfully", true), HttpStatus.OK);
+		return new ResponseEntity<ApiResponse>(new ApiResponse("Portfolio deleted successfully", true), HttpStatus.OK);
 		
 	}
 	

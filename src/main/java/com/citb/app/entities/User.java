@@ -12,12 +12,15 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -49,6 +52,9 @@ public class User implements UserDetails{
 	  
 	@ManyToMany(mappedBy = "guests")
 	private Set<Meeting> meetings;
+	
+	@OneToMany(mappedBy = "user", fetch= FetchType.LAZY, cascade = CascadeType.ALL)
+	Set<Portfolio> portfolios = new HashSet<>();
 	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
