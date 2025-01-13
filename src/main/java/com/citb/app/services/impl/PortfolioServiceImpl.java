@@ -82,6 +82,11 @@ public class PortfolioServiceImpl implements PortfolioService{
 
 		Portfolio portfolio = this.portRepo.findById(portfolioId).
 				orElseThrow(() -> new ResourceNotFoundException("porrtfolio", "id", portfolioId));
+		
+		List<String> preSignedUrls = portfolio.getImageUrls().stream()
+				.map(amazonS3Service::preSignedUrl)
+				.collect(Collectors.toList());
+		portfolio.setImageUrls(preSignedUrls);
 		return this.modelMapper.map(portfolio, PortfolioDTO.class);
 	}
 
@@ -89,11 +94,19 @@ public class PortfolioServiceImpl implements PortfolioService{
 	public List<PortfolioDTO> getAllPortfolios() {
 
         List<Portfolio> portfolios = this.portRepo.findAll();
-        List<PortfolioDTO> portfolioDTOs = portfolios.stream()
-        		.map(portfolio -> this.modelMapper.map(portfolio, PortfolioDTO.class))
-        		.collect(Collectors.toList());
-		
-		return portfolioDTOs;
+ 
+        
+       return  portfolios.stream()
+        		.map(portfolio ->{
+        			PortfolioDTO portfolioDTO = this.modelMapper.map(portfolio, PortfolioDTO.class);
+        			
+        			List<String> preSignedUrls = portfolio.getImageUrls().stream()
+        					.map(amazonS3Service::preSignedUrl)
+        					.collect(Collectors.toList());
+        			portfolioDTO.setImageUrls(preSignedUrls);
+        			return portfolioDTO;
+        			
+        		}).collect(Collectors.toList());
 	}
 
 	@Override
@@ -102,12 +115,12 @@ public class PortfolioServiceImpl implements PortfolioService{
 		Portfolio portfolio = this.portRepo.findById(portfolioId)
 				.orElseThrow(() -> new ResourceNotFoundException("porrtfolio", "id", portfolioId));
 		
-		List<String> imageUrls = portfolio.getImageUrls();
+		List<String> imageKeys = portfolio.getImageUrls();
 		
-		if(imageUrls!=null || !imageUrls.isEmpty()) {
-			imageUrls.forEach(imageUrl ->{
-				String imageName = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
-				amazonS3Service.deleteImage(imageName);
+		if(imageKeys!=null && !imageKeys.isEmpty()) {
+			    imageKeys.forEach(imageKey ->{
+				
+				amazonS3Service.deleteImage(imageKey);
 			});
 		}
 		this.portRepo.delete(portfolio);
