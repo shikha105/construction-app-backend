@@ -1,6 +1,7 @@
 package com.citb.app.services.impl;
 
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class AmazonS3ServiceImpl implements AmazonS3Service{
 	
 	
 	@Override
-	public String uploadImage(MultipartFile image) {
+	public String uploadImage(MultipartFile image, String folderName) {
 		
 		if(image == null || image.isEmpty()) {
 			throw new ImageUploadException("Image is null or empty ");
@@ -60,7 +61,17 @@ public class AmazonS3ServiceImpl implements AmazonS3Service{
 		metaData.setContentLength(image.getSize());
 		
 		try {
-			amazonS3.putObject(new PutObjectRequest(bucketName, imageName, image.getInputStream(), metaData));
+			
+			 boolean folderExists = amazonS3.listObjectsV2(bucketName, folderName + "/")
+                     .getKeyCount() > 0;
+                     
+                     if (!folderExists) {
+                         ObjectMetadata folderMetadata = new ObjectMetadata();
+                         folderMetadata.setContentLength(0);
+                         amazonS3.putObject(bucketName, folderName + "/", new ByteArrayInputStream(new byte[0]), folderMetadata);
+                     }       
+                     
+			amazonS3.putObject(new PutObjectRequest(bucketName, folderName +"/"+imageName, image.getInputStream(), metaData));
 		} catch (IOException e) {
 				
 			throw new ImageUploadException("error in uploading image" + e.getMessage());

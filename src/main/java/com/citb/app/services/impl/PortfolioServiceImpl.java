@@ -45,8 +45,8 @@ public class PortfolioServiceImpl implements PortfolioService{
 		User userInfo = (User) userDetailsService.loadUserByUsername(username);
 
 		
-		   List<String> imageKeys = images.stream()
-	                .map(amazonS3Service::uploadImage)
+		  List<String> imageKeys = images.stream()
+	                .map(image -> amazonS3Service.uploadImage(image, userInfo.getId()))
 	                .collect(Collectors.toList());
 		   
 		 
@@ -70,9 +70,12 @@ public class PortfolioServiceImpl implements PortfolioService{
 				throw new IllegalArgumentException("A portfolio cannot have more than 5 images.");
 			}
 			
-
+			UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			String username = userDetails.getUsername();
+			User userInfo = (User) userDetailsService.loadUserByUsername(username);
+			
 			   List<String> imageKeys = images.stream()
-		                .map(amazonS3Service::uploadImage)
+		                .map(image -> amazonS3Service.uploadImage(image, userInfo.getId()))
 		                .collect(Collectors.toList());
 			   
 			   portfolio.setImageUrls(imageKeys);
@@ -152,5 +155,6 @@ public class PortfolioServiceImpl implements PortfolioService{
 
 			}).collect(Collectors.toList());
 	}
+
 
 }
