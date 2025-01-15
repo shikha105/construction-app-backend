@@ -19,6 +19,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.citb.app.payloads.ApiResponse;
+import com.citb.app.payloads.MeetingDTO;
 import com.citb.app.payloads.PortfolioDTO;
 import com.citb.app.services.PortfolioService;
 
@@ -64,6 +65,14 @@ public class PortfolioController {
 	@GetMapping
 	public ResponseEntity<List<PortfolioDTO>> getAllPortfolios(){
 		List<PortfolioDTO> portfolioDTOs =	this.portService.getAllPortfolios();
+		
+		
+		return new ResponseEntity<>(portfolioDTOs, HttpStatus.OK);
+	}
+	
+	@GetMapping("/getAll/{userId}")
+	public ResponseEntity<List<PortfolioDTO>> getAllPortfoliosByUserId(@PathVariable  String userId){
+		List<PortfolioDTO> portfolioDTOs =	this.portService.getAllPortfoliosByUserId(userId);
 		
 		
 		return new ResponseEntity<>(portfolioDTOs, HttpStatus.OK);

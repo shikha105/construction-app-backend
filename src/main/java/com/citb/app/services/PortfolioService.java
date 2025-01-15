@@ -12,4 +12,5 @@ public interface PortfolioService {
 	 PortfolioDTO getPortfolioById( String portfolioId);
 	 List<PortfolioDTO> getAllPortfolios();
 	 void deletePortfolio(String portfolioId);
+	 List<PortfolioDTO> getAllPortfoliosByUserId(String userId);
 }
