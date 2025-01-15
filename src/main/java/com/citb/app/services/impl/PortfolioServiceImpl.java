@@ -5,9 +5,14 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import com.citb.app.entities.Portfolio;
+import com.citb.app.entities.Role;
+import com.citb.app.entities.User;
 import com.citb.app.exceptions.ResourceNotFoundException;
 import com.citb.app.payloads.PortfolioDTO;
 import com.citb.app.repositories.PortfolioRepo;
@@ -27,12 +32,18 @@ public class PortfolioServiceImpl implements PortfolioService{
 	
 	@Autowired
 	private AmazonS3Service amazonS3Service;
+	@Autowired
+	private UserDetailsService userDetailsService;
 	
 	@Override
 	public PortfolioDTO createPortfolio(PortfolioDTO portfolioDTO, List<MultipartFile> images) {
 		if (images.size() > 5) {
             throw new IllegalArgumentException("A portfolio cannot have more than 5 images.");
         }
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String username = userDetails.getUsername();
+		User userInfo = (User) userDetailsService.loadUserByUsername(username);
+
 		
 		   List<String> imageKeys = images.stream()
 	                .map(amazonS3Service::uploadImage)
@@ -42,7 +53,7 @@ public class PortfolioServiceImpl implements PortfolioService{
 		Portfolio portfolio = this.modelMapper.map(portfolioDTO, Portfolio.class);
 		portfolio.setId(RandomUtil.randomIdentity("Portfolio"));
 		portfolio.setImageUrls(imageKeys);
-		
+		portfolio.setUser(userInfo);
 		Portfolio createdPortfolio = this.portRepo.save(portfolio);
 		
 		return this.modelMapper.map(createdPortfolio, PortfolioDTO.class);
@@ -124,6 +135,22 @@ public class PortfolioServiceImpl implements PortfolioService{
 			});
 		}
 		this.portRepo.delete(portfolio);
+	}
+
+	@Override
+	public List<PortfolioDTO> getAllPortfoliosByUserId(String userId) {
+		 List<Portfolio> portfolios = this.portRepo.findByUserId(userId);
+		 
+		 
+			return portfolios.stream().map(portfolio -> {
+				PortfolioDTO portfolioDTO = this.modelMapper.map(portfolio, PortfolioDTO.class);
+
+				List<String> preSignedUrls = portfolio.getImageUrls().stream().map(amazonS3Service::preSignedUrl)
+						.collect(Collectors.toList());
+				portfolioDTO.setImageUrls(preSignedUrls);
+				return portfolioDTO;
+
+			}).collect(Collectors.toList());
 	}
 
 }
