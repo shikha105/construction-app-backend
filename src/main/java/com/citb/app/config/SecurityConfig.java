@@ -54,7 +54,7 @@ public class SecurityConfig  {
 			.csrf(csrf -> csrf.disable())
 			.cors(cors -> cors.disable())
 			.authorizeHttpRequests(auth -> auth
-					.requestMatchers( "/api/v1/users/**", "/api/v1/meetings/**" ).authenticated()
+					.requestMatchers("/api/v1/portfolios/**", "/api/v1/users/**", "/api/v1/meetings/**" ).authenticated()
 					.requestMatchers("/v3/**").permitAll()
 					.anyRequest().permitAll()
 					)
