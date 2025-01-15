@@ -3,6 +3,8 @@ package com.citb.app.payloads;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.citb.app.entities.User;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.GeneratedValue;
@@ -20,14 +22,14 @@ import lombok.Setter;
 public class PortfolioDTO {
 
 	private String id;
-	
+
 	@NotEmpty
 	private String title;
-	
+
 	@NotEmpty
 	private String description;
-	
-	 
-    private List<String> imageUrls = new ArrayList<>();
+
+	private List<String> imageUrls = new ArrayList<>();
+    
 	    
 }
